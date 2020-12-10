@@ -1,9 +1,9 @@
 // not import * as Sequelize from 'sequelize' <--This is wrong doesn't work
 import {Sequelize} from 'sequelize';
 
-const db = 'expressapp'
-const username = 'mysql'
-const password = 'root'
+const db = 'test'
+const username = 'root'
+const password = ''
 
 
 export const sequelize = new Sequelize(db, username, password,{
@@ -11,10 +11,10 @@ export const sequelize = new Sequelize(db, username, password,{
     port:3306,
 });
 
-
 try {
-    sequelize.authenticate();
-    console.log('Connection has been established successfully.');
+    sequelize.authenticate().then(result=> console.log("Connection established"));
+    sequelize.sync();
+   
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }

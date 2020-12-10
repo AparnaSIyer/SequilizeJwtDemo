@@ -28,36 +28,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validatePassword = exports.encrypPassword = exports.User = void 0;
-const sequelize_1 = require("sequelize");
-const sequelize_2 = require("../instances/sequelize");
+exports.login = exports.register = void 0;
 const bcrypt = __importStar(require("bcryptjs"));
-exports.User = sequelize_2.sequelize.define('User', {
-    id: { primaryKey: true,
-        autoIncrement: true,
-        type: sequelize_1.DataTypes.INTEGER },
-    email: {
-        unique: true,
-        type: sequelize_1.DataTypes.STRING,
-        allowNull: false
-    },
-    password: sequelize_1.DataTypes.STRING,
-}, {
-    tableName: 'User'
+const User_1 = require("../models/User");
+const _saltRounds = 12;
+const _jwtSecret = '0.rfyj3n9nzh';
+const register = (email, password) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield bcrypt.hash(password, _saltRounds)
+        .then(hash => {
+        return User_1.User.create({ email, password: hash })
+            .then(id => { return id; });
+    });
 });
-function encrypPassword(password) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const salt = yield bcrypt.genSalt(10);
-        return bcrypt.hash(password, salt);
+exports.register = register;
+const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    User_1.User.findOne({
+        where: {
+            email: req.body.email
+        }
+    })
+        .then(user => {
+        if (!user) {
+            return res.status(404).send({ message: "User not found" });
+        }
+        const correctPassword = bcrypt.compareSync(req.body.password, user.password);
     });
-}
-exports.encrypPassword = encrypPassword;
-;
-function validatePassword(reqpassword, userpwd) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return yield bcrypt.compare(reqpassword, userpwd);
-    });
-}
-exports.validatePassword = validatePassword;
-;
-//# sourceMappingURL=User.js.map
+});
+exports.login = login;
+//# sourceMappingURL=service.js.map

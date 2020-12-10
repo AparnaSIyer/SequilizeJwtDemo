@@ -1,41 +1,31 @@
-import {Schema,model,Document} from 'mongoose';
-import bcrypt from 'bcryptjs';
-import {Sequelize} from 'sequelize';
-import {sequelize} from '../instances/sequelize';
+import { Sequelize, Model, DataTypes, BuildOptions } from 'sequelize';
+import {sequelize} from '../instances/sequelize'
+import * as bcrypt from 'bcryptjs';
+import { flattenDiagnosticMessageText } from 'typescript';
 
-export interface IUser extends Document{
-    username: string;
-    email: string;
-    password:string;
-    encryptPassword(password:string):Promise<string>;
-    validatePassword(password:string):Promise<boolean>;
-}
-
-export const userschema= new Schema({
-    username:{
-        type:String,
-        required:true,
-        min:4,
-        lowercase:true
-    },
+export const User = sequelize.define('User',{
+    id:{primaryKey:true,
+        autoIncrement:true,
+        type:DataTypes.INTEGER},
+    
     email:{
-        type:String,
         unique:true,
-        required:true,
-        lowercase:true
+        type:DataTypes.STRING,
+        allowNull:false
     },
-    password:{
-        type:String,
-        required:true
-    }
-})
+    
+    password:DataTypes.STRING,
+    
+},{
+    tableName: 'User'
+ })
 
-userschema.methods.encryptPassword =async (password: string):Promise<string>=>{
-    const salt= await bcrypt.genSalt(10);
-    return bcrypt.hash(password,salt);
+export async function encrypPassword (password: string): Promise<string> {
+    const salt = await bcrypt.genSalt(10);
+    return bcrypt.hash(password, salt);
 };
 
-userschema.methods.validatePassword=async function(password:string):Promise<boolean>{
-    return await bcrypt.compare(password,this.password)
-}
-export default model<IUser>('User',userschema);
+export async function validatePassword(reqpassword: string,userpwd:string): Promise<boolean> {
+
+    return await bcrypt.compare(reqpassword, userpwd);
+};

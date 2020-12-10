@@ -10,7 +10,7 @@ const TokenValidation = (req, res, next) => {
     if (!token)
         return res.status(401).json('No you can not go in!');
     const PL = jsonwebtoken_1.default.verify(token, process.env.TOKEN_SECRET || 'test');
-    console.log(PL);
+    console.log('PL--------->', PL);
     next();
 };
 exports.TokenValidation = TokenValidation;

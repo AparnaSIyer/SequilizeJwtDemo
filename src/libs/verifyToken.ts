@@ -6,6 +6,6 @@ export const TokenValidation=(req:Request,res:Response,next:NextFunction)=>{
     
     if(!token) return res.status(401).json('No you can not go in!' );
     const PL=jwt.verify(token,process.env.TOKEN_SECRET || 'test');
-    console.log(PL);
+    console.log('PL--------->',PL);
     next();
 };
