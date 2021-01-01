@@ -8,13 +8,17 @@ const username = 'root';
 const password = '';
 exports.sequelize = new sequelize_1.Sequelize(db, username, password, {
     dialect: "mysql",
-    port: 3306,
+    port: 3307,
+    pool: {
+        max: 5,
+        min: 0,
+        idle: 10000
+    },
 });
 try {
     exports.sequelize.authenticate().then(result => console.log("Connection established"));
     exports.sequelize.sync();
 }
 catch (error) {
-    console.error('Unable to connect to the database:', error);
+    console.error('Unable to connect to the database:');
 }
-//# sourceMappingURL=sequelize.js.map

@@ -8,7 +8,12 @@ const password = ''
 
 export const sequelize = new Sequelize(db, username, password,{
     dialect:"mysql",
-    port:3306,
+    port:3307,
+    pool: {
+      max: 5,
+      min: 0,
+      idle: 10000
+    },
 });
 
 try {
@@ -16,5 +21,5 @@ try {
     sequelize.sync();
    
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
+    console.error('Unable to connect to the database:');
   }

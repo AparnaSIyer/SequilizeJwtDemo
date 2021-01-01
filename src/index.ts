@@ -1,6 +1,6 @@
 import app from './app';
 import mongoose from 'mongoose';
-import './database';
+import './instances/sequelize';
 import dotenv from 'dotenv';
 
 

@@ -9,7 +9,6 @@ export const signup=async (req:Request,res:Response)=>{
         password:req.body.password
     });
     
-    console.log('---->',user.getDataValue('password'));
     let pwdEnc:any=await encrypPassword(req.body.password);
     user.setDataValue('password',pwdEnc);
     const saveduser1= await user.save();
@@ -19,23 +18,32 @@ export const signup=async (req:Request,res:Response)=>{
 
 export const signin=async (req:Request,res:Response)=>{
     
-    const user= await User.findOne({where:{email:req.body.email}})
+
+    const user= await User.findOne({where:{email:req.body.user.email}})
     
     if(!user) return res.status(404).json('Email or password is wrong');
     
-    const correctPassword= await validatePassword(req.body.password,user.getDataValue('password'));
+    const correctPassword= await validatePassword(req.body.user.password,user.getDataValue('password'));
 
     if(!correctPassword) return res.status(404).json('Password is wrong');
-    
     const token:string= jwt.sign({id:user.getDataValue('Id'),email:user.getDataValue('email')},process.env.TOKEN_SECRET || 'test',{
         expiresIn: '1h'
     });
+
 
     return res.header('auth-token',token).json(user); ;
  
 };
 
 export const profile=(req:Request,res:Response)=>{
-    return res.send('Welcome aboard!');
+    console.log("profile")
+    let msg="'Welcome aboard!'";
+    return res.status(200).json({msg});
 };
 
+export const test=(req:Request,res:Response)=>{
+    
+    const msg="Okay yu have got here";
+    
+    return res.send(msg);
+}

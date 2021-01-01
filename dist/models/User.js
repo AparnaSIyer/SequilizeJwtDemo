@@ -60,4 +60,3 @@ function validatePassword(reqpassword, userpwd) {
 }
 exports.validatePassword = validatePassword;
 ;
-//# sourceMappingURL=User.js.map
